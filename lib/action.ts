@@ -30,7 +30,10 @@ export enum ActionType {
 	Tell = "tell",
 
 	/** Respond to a transaction */
-	TransactionRespond = "respond"
+	TransactionRespond = "respond",
+
+	/** Get a list of entities */
+	GetEntities = "get_entities"
 }
 
 export type ActionData = { [key: string]: unknown };

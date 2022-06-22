@@ -37,6 +37,10 @@ export class Location implements LocationOptions {
 	public static from(x: number, y: number, z: number): Location {
 		return new Location({ x, y, z });
 	}
+
+	public toString() {
+		return `${this.x},${this.y},${this.z}`;
+	}
 }
 
 export class WorldLocation extends Location implements WorldLocationOptions {
@@ -46,5 +50,9 @@ export class WorldLocation extends Location implements WorldLocationOptions {
 	constructor(options: WorldLocationOptions) {
 		super(options);
 		this.world = options.world;
+	}
+
+	public toString() {
+		return `${this.world};${super.toString()}`;
 	}
 }

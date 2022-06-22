@@ -2,6 +2,7 @@ import { WorldLocation } from "./world/location.ts";
 import { Player } from "./world/player.ts";
 import { CraftError } from "./error.ts";
 
+/** Internal representation of a ReplCraft token */
 interface TokenData {
 	/** Dynamic IP of the host */
 	host: string;

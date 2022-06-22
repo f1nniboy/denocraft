@@ -4,6 +4,7 @@ import { CraftError, CraftRequestError } from "./error.ts";
 import { EventType } from "./event.ts";
 import { Token } from "./token.ts";
 
+import { Entity, EntityData } from "./world/entity.ts";
 import { Transaction } from "./transaction.ts";
 import { Location } from "./world/location.ts";
 import { Player } from "./world/player.ts";
@@ -203,8 +204,17 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * @param transaction Transaction to respond to
 	 * @param status Whether to accept or deny the transaction
 	 */
-	public transact(transaction: Transaction, status: boolean): Promise<void> {
+	 public transact(transaction: Transaction, status: boolean): Promise<void> {
 		return this.send(ActionType.TransactionRespond, { queryNonce: transaction.nonce, accept: status }).then(() => {});
+	}
+
+	/**
+	 * Get a list of entities inside of the structure.
+	 */
+	 public getEntities(): Promise<Entity[]> {
+		return this.send(ActionType.GetEntities).then(data => (
+			(data.entities as EntityData[]).map(data => Entity.from(data))
+		));
 	}
 
 	/**
