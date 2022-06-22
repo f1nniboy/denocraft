@@ -86,6 +86,6 @@ export class Entity implements EntityOptions {
 			maxHealth: max_health,
 			health,
 			location: Location.from(x, y, z)
-		})
+		});
 	}
 }

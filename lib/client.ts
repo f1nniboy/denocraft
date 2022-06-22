@@ -4,6 +4,7 @@ import { CraftError, CraftRequestError } from "./error.ts";
 import { EventType } from "./event.ts";
 import { Token } from "./token.ts";
 
+import { FuelInfo, FuelInfoData } from "./fuel/info.ts";
 import { Entity, EntityData } from "./world/entity.ts";
 import { Transaction } from "./transaction.ts";
 import { Location } from "./world/location.ts";
@@ -214,6 +215,15 @@ export class Client extends EventEmitter<ClientEvents> {
 	 public getEntities(): Promise<Entity[]> {
 		return this.send(ActionType.GetEntities).then(data => (
 			(data.entities as EntityData[]).map(data => Entity.from(data))
+		));
+	}
+
+	/**
+	 * Get information about the current fuel usage of the structure and all connected clients.
+	 */
+	public getFuelInfo(): Promise<FuelInfo> {
+		return this.send(ActionType.GetFuelInfo).then(data => (
+			FuelInfo.from(data as unknown as FuelInfoData)
 		));
 	}
 

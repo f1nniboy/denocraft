@@ -33,7 +33,10 @@ export enum ActionType {
 	TransactionRespond = "respond",
 
 	/** Get a list of entities */
-	GetEntities = "get_entities"
+	GetEntities = "get_entities",
+
+	/** Get information about the current fuel usage */
+	GetFuelInfo = "fuelinfo"
 }
 
 export type ActionData = { [key: string]: unknown };
