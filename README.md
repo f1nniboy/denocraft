@@ -6,11 +6,11 @@ This library was inspired by **[SirLennox/ReplCraft](https://github.com/SirLenno
 implementation of a ReplCraft client, compared to **[the official library](https://github.com/LeeFlemingRepl/replcraft-nodejs-client)**.
 
 ## Getting started
-Simply include the `denocraft` library inside of your **Deno** project.
+Simply include the `replcraft` library inside of your **Deno** project.
 
 ### *Connecting to the server*
 ```ts
-import { Client } from "https://deno.land/x/denocraft/mod.ts";
+import { Client } from "https://deno.land/x/replcraft/mod.ts";
 const client = new Client();
 
 await client.connect({
@@ -21,7 +21,7 @@ await client.connect({
 ### *Placing a block*
 **Note**: *The block has to be inside of the structure's chest.*
 ```ts
-import { Client, Location, Block } from "https://deno.land/x/denocraft/mod.ts";
+import { Client, Location, Block } from "https://deno.land/x/replcraft/mod.ts";
 
 ...
 
