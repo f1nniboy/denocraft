@@ -205,7 +205,7 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * @param player Player to send the message to
 	 * @param message Message to send to the player
 	 */
-	 public tell(player: Player, message: string): Promise<void> {
+	public tell(player: Player, message: string): Promise<void> {
 		return this.send(ActionType.Tell, { target: player.toString(), message }).then(() => {});
 	}
 
@@ -215,14 +215,14 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * @param transaction Transaction to respond to
 	 * @param status Whether to accept or deny the transaction
 	 */
-	 public transact(transaction: Transaction, status: boolean): Promise<void> {
+	public transact(transaction: Transaction, status: boolean): Promise<void> {
 		return this.send(ActionType.TransactionRespond, { queryNonce: transaction.nonce, accept: status }).then(() => {});
 	}
 
 	/**
 	 * Get a list of entities inside of the structure.
 	 */
-	 public getEntities(): Promise<Entity[]> {
+	public getEntities(): Promise<Entity[]> {
 		return this.send(ActionType.GetEntities).then(data => (
 			(data.entities as EntityData[]).map(data => Entity.from(data))
 		));
@@ -235,6 +235,28 @@ export class Client extends EventEmitter<ClientEvents> {
 		return this.send(ActionType.GetFuelInfo).then(data => (
 			FuelInfo.from(data as unknown as FuelInfoData)
 		));
+	}
+
+	/**
+	 * Update the text of a sign.
+	 * 
+	 * @param location Location of the sign block
+	 * @param lines Text of the sign, line-by-line
+	 */
+	 public setSignText({ x, y, z }: Location, lines: string[]): Promise<void> {
+		/* If there are more or less than 4 lines of text to set, throw an error. */
+		if (lines.length !== 4) throw new CraftError("Expected 4 lines of text");
+		return this.send(ActionType.SetSignText, { x, y, z, lines }).then(() => {});
+	}
+
+	/**
+	 * Get the text of a sign.
+	 * @param location Location of the sign block
+	 * 
+	 * @returns Lines of the sign
+	 */
+	 public getSignText({ x, y, z }: Location): Promise<string[]> {
+		return this.send(ActionType.GetSignText, { x, y, z }).then(data => data.lines as string[]);
 	}
 
 	/**
@@ -348,9 +370,16 @@ export class Client extends EventEmitter<ClientEvents> {
 						const { amount, query, player, player_uuid, queryNonce } = data;
 
 						this.emit("transaction", new Transaction(this, {
-							amount: amount as number,
+							/* Unique identifier of the transaction */
 							nonce: queryNonce as number,
+
+							/* Player, who initiated the transaction */
 							player: new Player({ name: player as string, uuid: player_uuid as string }),
+
+							/* How much money the player has deposited */
+							amount: amount as number,
+
+							/* The text after the `/transact <amount>` command, given by the user */
 							query: query as string
 						}));
 					}

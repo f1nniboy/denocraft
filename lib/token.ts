@@ -69,7 +69,7 @@ export class Token implements TokenOptions {
 	constructor(raw: string, { host, location, owner, permission }: TokenOptions) {
 		this.host = host;
 		this.location = location;
-		this.owner = owner ?? null;
+		this.owner = owner;
 
 		this.permission = permission;
 		this.raw = raw;

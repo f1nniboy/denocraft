@@ -30,4 +30,18 @@ export class Player {
 	public toString() {
 		return this.uuid || this.name!;
 	}
+
+	/**
+	 * Create a new player using a name and optionally, a UUID.
+	 * 
+	 * @param name Name of the player
+	 * @param uuid UUID of the player
+	 * 
+	 * @returns A new player instance
+	 */
+	public static from(name: string, uuid?: string): Player {
+		return new Player({
+			name, uuid
+		});
+	}
 }

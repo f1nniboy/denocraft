@@ -39,7 +39,13 @@ export enum ActionType {
 	GetFuelInfo = "fuelinfo",
 
 	/** Keep the connection alive */
-	Ping = "ping"
+	Ping = "ping",
+
+	/** Update the text of a sign */
+	SetSignText = "set_sign_text",
+
+	/** Get the text of a sign */
+	GetSignText = "get_sign_text"
 }
 
 export type ActionData = { [key: string]: unknown };
