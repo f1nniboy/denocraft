@@ -2,37 +2,37 @@ import { FuelInfoConnectionUsage, FuelInfoConnectionUsageOptions } from "./conne
 import { Location } from "../world/location.ts";
 
 export interface FuelInfoConnectionData {
-	/* Location of the structure */
+	/** Location of the structure */
 	x: number;
 	y: number;
 	z: number;
 
-	/* Textual representation of the structure, subject to change */
+	/** Textual representation of the structure, subject to change */
 	structure: string;
 
-	/* Fuel used by the API routes */
+	/** Fuel used by the API routes */
 	fuelUsage: { [route: string]: FuelInfoConnectionUsageOptions };
 }
 
 interface FuelInfoConnectionOptions {
-	/* Location of the structure */
+	/** Location of the structure */
 	location: Location;
 
-	/* Textual representation of the structure, subject to change */
+	/** Textual representation of the structure, subject to change */
 	structure: string;
 
-	/* Fuel used by the API routes */
+	/** Fuel used by the API routes */
 	usage: Map<string, FuelInfoConnectionUsage>;
 }
 
 export class FuelInfoConnection implements FuelInfoConnectionOptions {
-	/* Location of the structure */
+	/** Location of the structure */
 	public readonly location: Location;
 
-	/* Textual representation of the structure, subject to change */
+	/** Textual representation of the structure, subject to change */
 	public readonly structure: string;
 
-	/* Fuel used by the API routes */
+	/** Fuel used by the API routes */
 	public readonly usage: Map<string, FuelInfoConnectionUsage>;
 
 	constructor({ location, structure, usage }: FuelInfoConnectionOptions) {

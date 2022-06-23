@@ -10,18 +10,18 @@ interface LocationOptions {
 }
 
 type WorldLocationOptions = LocationOptions & {
-	/* Name of the location's world */
+	/** Name of the location's world */
 	world: string;
 }
 
 export class Location implements LocationOptions {
-	/* X coordinate of the location */
+	/** X coordinate of the location */
 	public x: number;
 
-	/* Y coordinate of the location */
+	/** Y coordinate of the location */
 	public y: number;
 
-	/* Z coordinate of the location */
+	/** Z coordinate of the location */
 	public z: number;
 
 	constructor({ x, y, z }: LocationOptions) {

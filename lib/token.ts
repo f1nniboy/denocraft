@@ -22,16 +22,16 @@ interface TokenData {
 }
 
 interface TokenOptions {
-	/* Dynamic IP of the host */
+	/** Dynamic IP of the host */
 	host: string;
 
-	/* Where the sign block is located in the world */
+	/** Where the sign block is located in the world */
 	location: WorldLocation;
 
-	/* Information about the owner of the structure */
+	/** Information about the owner of the structure */
 	owner: Player;
 
-	/* Permission level of the structure */
+	/** Permission level of the structure */
 	permission: TokenPermission;
 }
 

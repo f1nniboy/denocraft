@@ -16,6 +16,12 @@ import { StandardWebSocketClient, EventEmitter } from "../deps.ts";
 interface ConnectionOptions {
 	/** Token of the ReplCraft structure */
 	token: Token;
+
+	/**
+	 * Whether to send `Ping` packets regularly to the server, in order to not be disconnected
+	 * **Note**: *This is not officially supported, and may not work in the future.*
+	 */
+	keepAlive?: boolean;
 }
 
 /* Events for the client instance */
@@ -55,6 +61,9 @@ export class Client extends EventEmitter<ClientEvents> {
 	/* Current nonce identifier */
 	private nonce: number;
 
+	/* Timer to regularly send `Ping` packets */
+	private timer: number;
+
 	/** Whether the client is currently connected to the server */
 	private get connected(): boolean {
 		return this.connection !== null
@@ -70,6 +79,7 @@ export class Client extends EventEmitter<ClientEvents> {
 		this.handlers = new Map<number, Handler>();
 		this.connection = null;
 		this.token = null;
+		this.timer = -1;
 		this.nonce = 0;
 	}
 
@@ -233,6 +243,7 @@ export class Client extends EventEmitter<ClientEvents> {
 	public disconnect(): void {
 		/* If the client is connected, try to close the connection. */
 		if(this.connected) {
+			clearInterval(this.timer);
 			this.connection!.close();
 		} else throw new CraftError("The client is not connected");
 	}
@@ -241,15 +252,24 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * Connect to a ReplCraft server.
 	 * @param options Options to use for the connection
 	 */
-	public connect({ token }: ConnectionOptions): Promise<void> {
+	public connect({ token, keepAlive }: ConnectionOptions): Promise<void> {
 		/* If the client is already connected, throw an error and return. */
 		if (this.connected) throw new CraftError("The client is already connected");
+
+		/* If `Ping` packets should be sent, create a new timer, which sends one every sixty seconds. */
+		if (keepAlive) this.timer = setInterval(async () => {
+			try {
+				await this.send(ActionType.Ping);
+			} catch (_)  {
+				/* Stub */
+			}
+		}, 60e3);
 
 		/* Set the client's token. */
 		this.token = token;
 
 		/* Reset the client's settings, just in case. */
-		this.handlers = new Map<number, Handler>();
+		this.handlers = new Map();
 		this.connection = null;
 		this.nonce = 0;
 

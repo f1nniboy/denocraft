@@ -36,7 +36,10 @@ export enum ActionType {
 	GetEntities = "get_entities",
 
 	/** Get information about the current fuel usage */
-	GetFuelInfo = "fuelinfo"
+	GetFuelInfo = "fuelinfo",
+
+	/** Keep the connection alive */
+	Ping = "ping"
 }
 
 export type ActionData = { [key: string]: unknown };

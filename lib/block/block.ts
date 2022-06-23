@@ -26,18 +26,18 @@ export enum BlockUpdateCause {
 }
 
 interface BlockOptions {
-	/* Identifier of the block */
+	/** Identifier of the block */
 	identifier: Identifier;
 
-	/* States of the block */
+	/** States of the block */
 	states: Map<string, string>;
 }
 
 export class Block implements BlockOptions {
-	/* Identifier of the block */
+	/** Identifier of the block */
 	public readonly identifier: Identifier;
 
-	/* States of the block */
+	/** States of the block */
 	public readonly states: Map<string, string>;
 
 	constructor({ identifier, states }: BlockOptions) {

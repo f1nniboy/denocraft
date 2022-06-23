@@ -45,22 +45,22 @@ interface EntityOptions {
 }
 
 export class Entity implements EntityOptions {
-	/* Type of the entity */
+	/** Type of the entity */
 	public readonly type: string;
 
-	/* Name of the entity */
+	/** Name of the entity */
 	public readonly name: string;
 
-	/* Player this entity relates to, if the entity is a player */
+	/** Player this entity relates to, if the entity is a player */
 	public readonly player: Player | null;
 
-	/* Current health of the entity */
+	/** Current health of the entity */
 	public readonly health: number;
 
-	/* Maximum health of the entity */
+	/** Maximum health of the entity */
 	public readonly maxHealth: number;
 
-	/* Location of the entity */
+	/** Location of the entity */
 	public readonly location: Location;
 
 	constructor({ type, name, player, health, maxHealth, location }: EntityOptions) {

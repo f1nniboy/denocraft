@@ -9,10 +9,10 @@ interface IdentifierOptions {
 }
 
 export class Identifier implements IdentifierOptions {
-	/* Namespace of the identifier, e.g. `minecraft` */
+	/** Namespace of the identifier, e.g. `minecraft` */
 	public readonly namespace: string;
 
-	/* Block or item identifier, e.g. `stone_sword` */
+	/** Block or item identifier, e.g. `stone_sword` */
 	public readonly identifier: string;
 
 	constructor({ namespace, identifier }: IdentifierOptions) {

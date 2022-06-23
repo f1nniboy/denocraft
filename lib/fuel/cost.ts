@@ -1,16 +1,16 @@
 export interface FuelInfoAPICostData {
-	/* How much this API costs normally */
+	/** How much this API costs normally */
 	baseFuelCost: number;
 
-	/* How much this API costs currently */
+	/** How much this API costs currently */
 	fuelCost: number;
 }
 
 interface FuelInfoAPICostOptions {
-	/* How much this API costs normally */
+	/** How much this API costs normally */
 	base: number;
 
-	/* How much this API costs currently */
+	/** How much this API costs currently */
 	current: number;
 }
 
