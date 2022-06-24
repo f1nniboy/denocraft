@@ -1,3 +1,5 @@
+import { ActionData } from "../action.ts";
+
 interface LocationOptions {
 	/** X coordinate of the location */
 	x: number;
@@ -36,6 +38,18 @@ export class Location implements LocationOptions {
 	 */
 	public static from(x: number, y: number, z: number): Location {
 		return new Location({ x, y, z });
+	}
+
+	/**
+	 * Convert the location instance into a ReplCraft-usable object.
+	 * @returns ReplCraft-usable location object
+	 */
+	public toObject(prefix?: string): ActionData {
+		return {
+			[`${prefix ?? ""}x`]: this.x,
+			[`${prefix ?? ""}y`]: this.y,
+			[`${prefix ?? ""}z`]: this.z
+		};
 	}
 
 	public toString() {

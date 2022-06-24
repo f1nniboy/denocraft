@@ -4,6 +4,7 @@ import { CraftError, CraftRequestError } from "./error.ts";
 import { EventType } from "./event.ts";
 import { Token } from "./token.ts";
 
+import { ItemSlot, ItemSlotData } from "./inventory/slot/item.ts";
 import { FuelInfo, FuelInfoData } from "./fuel/info.ts";
 import { Entity, EntityData } from "./world/entity.ts";
 import { Transaction } from "./transaction.ts";
@@ -12,6 +13,23 @@ import { Player } from "./world/player.ts";
 import { Block } from "./block/block.ts";
 
 import { StandardWebSocketClient, EventEmitter } from "../deps.ts";
+
+interface MoveItemOptions {
+	/** Source container, where the item is located */
+	source: Location;
+
+	/** Index of the item inside the source container to move */
+	index: number;
+
+	/** How many items to move, by default all */
+	amount?: number;
+
+	/** Target container, where the item should be moved to */
+	target: Location;
+
+	/** Which index to move the item to in the target container */
+	targetIndex?: number;
+}
 
 interface ConnectionOptions {
 	/** Token of the ReplCraft structure */
@@ -26,19 +44,19 @@ interface ConnectionOptions {
 
 /* Events for the client instance */
 type ClientEvents = {
-	/* A block has been updated */
+	/** A block has been updated */
 	blockUpdate: [event: BlockUpdateEvent];
 
-	/* A transaction has been initiated by a player */
+	/** A transaction has been initiated by a player */
 	transaction: [transaction: Transaction];
 
-	/* When the client has connected to the server */
+	/** When the client has connected to the server */
 	open: [];
 
-	/* When the client has disconnected from the server */
+	/** When the client has disconnected from the server */
 	close: [];
 
-	/* When an error occured with the connection */
+	/** When an error occured with the connection */
 	error: [error: Error];
 }
 
@@ -125,7 +143,7 @@ export class Client extends EventEmitter<ClientEvents> {
 
 			/* Event data */
 			...data
-		}))
+		}));
 
 		/* Wait until the server has acknowledged the event. */
 		return this.wait(action, this.nonce);
@@ -243,10 +261,10 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * @param location Location of the sign block
 	 * @param lines Text of the sign, line-by-line
 	 */
-	 public setSignText({ x, y, z }: Location, lines: string[]): Promise<void> {
+	public setSignText(location: Location, lines: string[]): Promise<void> {
 		/* If there are more or less than 4 lines of text to set, throw an error. */
 		if (lines.length !== 4) throw new CraftError("Expected 4 lines of text");
-		return this.send(ActionType.SetSignText, { x, y, z, lines }).then(() => {});
+		return this.send(ActionType.SetSignText, { ...location.toObject(), lines }).then(() => {});
 	}
 
 	/**
@@ -255,8 +273,34 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * 
 	 * @returns Lines of the sign
 	 */
-	 public getSignText({ x, y, z }: Location): Promise<string[]> {
-		return this.send(ActionType.GetSignText, { x, y, z }).then(data => data.lines as string[]);
+	public getSignText(location: Location): Promise<string[]> {
+		return this.send(ActionType.GetSignText, location.toObject()).then(data => data.lines as string[]);
+	}
+
+	/**
+	 * Get the contents of a container within the structure.
+	 * @param location Location of the container, e.g. chest or barrel
+	 * 
+	 * @returns The inventory's contents
+	 */
+	public getInventory(location: Location): Promise<ItemSlot[]> {
+		return this.send(ActionType.GetInventory, location.toObject()).then(data => (
+			(data.items as ItemSlotData[]).map(item => ItemSlot.from(this, location, item))
+		));
+	}
+
+
+	/**
+	 * Move an item from one container to another.
+	 * @param options Item movement options
+	 */
+	public moveItem({ index, source, target, amount, targetIndex }: MoveItemOptions): Promise<void> {
+		return this.send(ActionType.MoveItem, {
+			...source.toObject("source_"),
+			...target ? target.toObject("target_") : {},
+			amount: amount ?? null,
+			index, target_index: targetIndex
+		}).then(() => {});
 	}
 
 	/**

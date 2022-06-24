@@ -12,9 +12,9 @@ await client.connect({
 await client.watch(Location.from(0, 0, 0));
 
 /* Wait for a user to start a transaction. */
-client.on("transaction", transaction => {
+client.on("transaction", async transaction => {
 	/* Respond to a transaction with a message. */
-	transaction.tell("Response to a transaction" + transaction.player.name);
+	await transaction.tell("Response to a transaction" + transaction.player.name);
 
 	/* Transaction#accept or Transaction#deny the transaction. */
 	if (transaction.query === "accept") transaction.accept();

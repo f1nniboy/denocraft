@@ -45,7 +45,13 @@ export enum ActionType {
 	SetSignText = "set_sign_text",
 
 	/** Get the text of a sign */
-	GetSignText = "get_sign_text"
+	GetSignText = "get_sign_text",
+
+	/** Get the contents of a container inside of the structure */
+	GetInventory = "get_inventory",
+
+	/** Move an item inside of a container to another slot */
+	MoveItem = "move_item"
 }
 
 export type ActionData = { [key: string]: unknown };
