@@ -71,7 +71,7 @@ export class Client extends EventEmitter<ClientEvents> {
 	public token: Token | null;
 
 	/* WebSocket connection */
-	private connection: StandardWebSocketClient | null;
+	public connection: StandardWebSocketClient | null;
 
 	/* List of event handlers */
 	private handlers: Map<number, Handler>;
@@ -289,6 +289,25 @@ export class Client extends EventEmitter<ClientEvents> {
 		));
 	}
 
+	/**
+	 * Get the power level of a redstone source.
+	 * @param location Location of the redstone source
+	 * 
+	 * @returns Power level of the redstone source, 0-15
+	 */
+	public getPowerLevel(location: Location): Promise<number> {
+		return this.send(ActionType.GetPowerLevel, location.toObject()).then(data => data.power as number);
+	}
+
+	/**
+	 * Pay the player the specified amount of currency.
+	 * 
+	 * @param player Which player to give the money to
+	 * @param amount How much money to give the player
+	 */
+	public pay(player: Player, amount: number): Promise<void> {
+		return this.send(ActionType.Pay, { target: player.toString(), amount }).then(() => {});
+	}
 
 	/**
 	 * Move an item from one container to another.
@@ -309,7 +328,7 @@ export class Client extends EventEmitter<ClientEvents> {
 	public disconnect(): void {
 		/* If the client is connected, try to close the connection. */
 		if(this.connected) {
-			clearInterval(this.timer);
+			if (this.timer !== -1) clearInterval(this.timer);
 			this.connection!.close();
 		} else throw new CraftError("The client is not connected");
 	}
@@ -323,7 +342,7 @@ export class Client extends EventEmitter<ClientEvents> {
 		if (this.connected) throw new CraftError("The client is already connected");
 
 		/* If `Ping` packets should be sent, create a new timer, which sends one every sixty seconds. */
-		if (keepAlive) this.timer = setInterval(async () => {
+		if (keepAlive ?? true) this.timer = setInterval(async () => {
 			try {
 				await this.send(ActionType.Ping);
 			} catch (_)  {

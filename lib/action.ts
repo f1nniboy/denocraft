@@ -51,7 +51,13 @@ export enum ActionType {
 	GetInventory = "get_inventory",
 
 	/** Move an item inside of a container to another slot */
-	MoveItem = "move_item"
+	MoveItem = "move_item",
+
+	/** Get the power level of a redstone source */
+	GetPowerLevel = "get_power_level",
+
+	/** Give money to another player */
+	Pay = "pay"
 }
 
 export type ActionData = { [key: string]: unknown };

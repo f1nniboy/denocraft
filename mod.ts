@@ -1,7 +1,7 @@
 /* Block */
 export { Block, BlockUpdateCause } from "./lib/block/block.ts";
-export { Identifier } from "./lib/block/identifier.ts";
 export type { BlockUpdateEvent } from "./lib/block/block.ts";
+export { Identifier } from "./lib/block/identifier.ts";
 
 /* Item & Slot */
 export { SlotReference } from "./lib/inventory/slot/reference.ts";
