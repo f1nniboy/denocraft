@@ -24,6 +24,16 @@ export class Player {
 	}
 
 	/**
+	 * Check whether two players are the same.
+	 * @param player Player to compare against
+	 * 
+	 * @returns Whether they are the same player
+	 */
+	public equals(player: Player): boolean {
+		return player.toString() === this.toString();
+	}
+
+	/**
 	 * Get the player's UUID or name, with the UUID taking priority.
 	 * @returns Player's UUID or name
 	 */

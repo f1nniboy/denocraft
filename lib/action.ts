@@ -57,10 +57,25 @@ export enum ActionType {
 	GetPowerLevel = "get_power_level",
 
 	/** Give money to another player */
-	Pay = "pay"
+	Pay = "pay",
+
+	/** Craft an item using its recipe */
+	Craft = "craft",
+
+	/** Watch all of the structure's blocks at once */
+	WatchAll = "watch_all",
+
+	/** Unwatch all of the structure's blocks at once */
+	UnwatchAll = "watch_all",
+
+	/** Poll all of the structure's blocks at once */
+	PollAll = "poll_all",
+
+	/** Unpoll all of the structure's blocks at once */
+	UnpollAll = "unpoll_all"
 }
 
-export type ActionData = { [key: string]: unknown };
+export type ActionData = { [key: string]: unknown }
 
 export type ResponseData = ActionData & {
 	/* Identifier of the action */

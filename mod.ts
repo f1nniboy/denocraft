@@ -11,6 +11,7 @@ export { Item } from "./lib/inventory/item.ts";
 
 /* World */
 export { Location, WorldLocation } from "./lib/world/location.ts";
+export { Entity } from "./lib/world/entity.ts";
 export { Player } from "./lib/world/player.ts";
 
 /* Client */

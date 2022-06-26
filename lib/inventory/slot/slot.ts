@@ -2,6 +2,23 @@ import { SlotReference, SlotReferenceOptions } from "./reference.ts";
 import { Location } from "../../world/location.ts";
 import { Client } from "../../client.ts";
 
+export interface MoveItemOptions {
+	/** Source container, where the item is located */
+	source: Location;
+
+	/** Index of the item inside the source container to move */
+	index: number;
+
+	/** How many items to move, by default all */
+	amount?: number;
+
+	/** Target container, where the item should be moved to */
+	target: Location;
+
+	/** Which index to move the item to in the target container */
+	targetIndex?: number;
+}
+
 export type SlotOptions = SlotReferenceOptions & {
 	/** Client in charge of the item slot */
 	client: Client;

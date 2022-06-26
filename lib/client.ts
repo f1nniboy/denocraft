@@ -5,6 +5,8 @@ import { EventType } from "./event.ts";
 import { Token } from "./token.ts";
 
 import { ItemSlot, ItemSlotData } from "./inventory/slot/item.ts";
+import { SlotReference } from "./inventory/slot/reference.ts";
+import { MoveItemOptions } from "./inventory/slot/slot.ts";
 import { FuelInfo, FuelInfoData } from "./fuel/info.ts";
 import { Entity, EntityData } from "./world/entity.ts";
 import { Transaction } from "./transaction.ts";
@@ -13,23 +15,6 @@ import { Player } from "./world/player.ts";
 import { Block } from "./block/block.ts";
 
 import { StandardWebSocketClient, EventEmitter } from "../deps.ts";
-
-interface MoveItemOptions {
-	/** Source container, where the item is located */
-	source: Location;
-
-	/** Index of the item inside the source container to move */
-	index: number;
-
-	/** How many items to move, by default all */
-	amount?: number;
-
-	/** Target container, where the item should be moved to */
-	target: Location;
-
-	/** Which index to move the item to in the target container */
-	targetIndex?: number;
-}
 
 interface ConnectionOptions {
 	/** Token of the ReplCraft structure */
@@ -320,6 +305,50 @@ export class Client extends EventEmitter<ClientEvents> {
 			amount: amount ?? null,
 			index, target_index: targetIndex
 		}).then(() => {});
+	}
+
+	/**
+	 * Craft an item using its recipe.
+	 * 
+	 * @param output Where to put the resulting item
+	 * @param recipe Recipe of the item to craft
+	 */
+	public craft(output: Location, recipe: (SlotReference | null)[]): Promise<void> {
+		return this.send(ActionType.Craft, {
+			ingredients: recipe.map(item => item ? item.toObject() : null),
+			...output.toObject()
+		}).then(() => {});
+	}
+
+	/**
+	 * Watch all of the structure's block for updates. This may not catch all possible block updates.
+	 * @fires blockUpdate
+	 */
+	public watchAll(): Promise<void> {
+		return this.send(ActionType.WatchAll).then(() => {});
+	}
+
+	/**
+	 * Stop watching all of the structure's blocks for updates.
+	 *
+	 */
+	public unwatchAll(): Promise<void> {
+		return this.send(ActionType.UnwatchAll).then(() => {});
+	}
+
+	/**
+	 * Poll all of the structure's blocks for updates. This is way slower than Client#watch(), and not as reliable.
+	 * @fires blockUpdate
+	 */
+	public pollAll(): Promise<void> {
+		return this.send(ActionType.PollAll).then(() => {});
+	}
+
+	/**
+	 * Stop polling all of the structure's blocks for updates.
+	 */
+	public unpollAll(): Promise<void> {
+		return this.send(ActionType.UnpollAll).then(() => {});
 	}
 
 	/**

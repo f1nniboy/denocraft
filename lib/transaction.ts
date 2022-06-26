@@ -54,7 +54,7 @@ export class Transaction implements TransactionOptions {
 	 public tell(message: string): Promise<void> {
 		/* If this player has no assigned client, throw an error. */
 		if (this.client === null) throw new CraftError("This player cannot be sent messages");
-		return this.client.tell(this.player, message);
+		return this.client.tell(this.player, `${message.split("\n").length > 1 ? "\n" : ""}${message.trim().replaceAll("\t", "")}`);
 	}
 
 	/**

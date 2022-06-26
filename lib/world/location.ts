@@ -33,6 +33,16 @@ export class Location implements LocationOptions {
 	}
 
 	/**
+	 * Check whether the locations are at the same location.
+	 * @param location Location to compare against
+	 * 
+	 * @returns Whether they are the same location
+	 */
+	public equals(location: Location): boolean {
+		return location.x === this.x && location.y === this.y && location.z === this.z;
+	}
+
+	/**
 	 * Create a new location.
 	 * @returns New location instance
 	 */
