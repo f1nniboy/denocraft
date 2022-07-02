@@ -16,18 +16,13 @@ import { Block } from "./block/block.ts";
 
 import { StandardWebSocketClient, EventEmitter } from "../deps.ts";
 
+/** Connection settings for the ReplCraft client */
 interface ConnectionOptions {
 	/** Token of the ReplCraft structure */
 	token: Token;
-
-	/**
-	 * Whether to send `Ping` packets regularly to the server, in order to not be disconnected
-	 * **Note**: *This is not officially supported, and may not work in the future.*
-	 */
-	keepAlive?: boolean;
 }
 
-/* Events for the client instance */
+/** Events for the client instance */
 type ClientEvents = {
 	/** A block has been updated */
 	blockUpdate: [event: BlockUpdateEvent];
@@ -98,7 +93,13 @@ export class Client extends EventEmitter<ClientEvents> {
 			this.handlers.set(nonce, {
 				callback: response => {
 					/* If the request has failed, reject the promise with an error. */
-					if (!response.success) reject(new CraftRequestError(action, response.data.message as string));
+					if (!response.success) {
+						/* The thrown error */
+						const error = new CraftRequestError(action, response.data.message as string);
+
+						this.emit("error", error);
+						reject(error);
+					}
 					
 					/* If the request has succeeded, resolve the promise with the response's data. */
 					else resolve(response.data);
@@ -162,8 +163,13 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * @param location Location of the block to set the state of
 	 * @param block State of the new block
 	 */
-	public setBlock({ x, y, z }: Location, block: Block | null): Promise<void> {
-		return this.send(ActionType.SetBlock, { x, y, z, blockData: (block ?? Block.from("minecraft:air")).toString() }).then(() => {});
+	public setBlock({ x, y, z }: Location, block: Block | null, source?: Location, target?: Location): Promise<void> {
+		return this.send(ActionType.SetBlock, {
+			...source ? source?.toObject("source_") : {},
+			...target ? target?.toObject("target_") : {},
+			x, y, z,
+			blockData: (block ?? Block.from("minecraft:air")).toString()
+		}).then(() => {});
 	}
 
 	/**
@@ -181,7 +187,7 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * @param location Location of the block to stop watching for updates
 	 */
 	public unwatch({ x, y, z }: Location): Promise<void> {
-		return this.send(ActionType.Watch, { x, y, z }).then(() => {});
+		return this.send(ActionType.Unwatch, { x, y, z }).then(() => {});
 	}
 
 	/**
@@ -358,7 +364,9 @@ export class Client extends EventEmitter<ClientEvents> {
 		/* If the client is connected, try to close the connection. */
 		if(this.connected) {
 			if (this.timer !== -1) clearInterval(this.timer);
+			
 			this.connection!.close();
+			this.emit("close");
 		} else throw new CraftError("The client is not connected");
 	}
 
@@ -366,18 +374,14 @@ export class Client extends EventEmitter<ClientEvents> {
 	 * Connect to a ReplCraft server.
 	 * @param options Options to use for the connection
 	 */
-	public connect({ token, keepAlive }: ConnectionOptions): Promise<void> {
+	public connect({ token }: ConnectionOptions): Promise<void> {
 		/* If the client is already connected, throw an error and return. */
 		if (this.connected) throw new CraftError("The client is already connected");
 
 		/* If `Ping` packets should be sent, create a new timer, which sends one every sixty seconds. */
-		if (keepAlive ?? true) this.timer = setInterval(async () => {
-			try {
-				await this.send(ActionType.Ping);
-			} catch (_)  {
-				/* Stub */
-			}
-		}, 60e3);
+		this.timer = setInterval(async () => {
+			if (this.connected) await this.send(ActionType.Heartbeat);
+		}, 15000);
 
 		/* Set the client's token. */
 		this.token = token;

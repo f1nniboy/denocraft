@@ -82,7 +82,7 @@ export class Entity implements EntityOptions {
 		return new Entity({
 			type,
 			name,
-			player: player_uuid !== null ? new Player({ name, uuid: player_uuid }) : null,
+			player: player_uuid ? new Player({ name, uuid: player_uuid }) : null,
 			maxHealth: max_health,
 			health,
 			location: Location.from(x, y, z)

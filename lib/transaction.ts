@@ -33,7 +33,7 @@ export class Transaction implements TransactionOptions {
 	public readonly query: string;
 
 	/* Whether this transaction has already been accepted or denied */
-	private replied: boolean;
+	public replied: boolean;
 
 	constructor(client: Client, { nonce, player, amount, query }: TransactionOptions) {
 		this.client = client;
@@ -54,7 +54,7 @@ export class Transaction implements TransactionOptions {
 	 public tell(message: string): Promise<void> {
 		/* If this player has no assigned client, throw an error. */
 		if (this.client === null) throw new CraftError("This player cannot be sent messages");
-		return this.client.tell(this.player, `${message.split("\n").length > 1 ? "\n" : ""}${message.trim().replaceAll("\t", "")}`);
+		return this.client.tell(this.player, `${message.toString().split("\n").length > 1 ? "\n" : ""}${message.trim().replaceAll("\t", "")}`);
 	}
 
 	/**

@@ -2,7 +2,7 @@ import { CraftError } from "../error.ts";
 
 interface IdentifierOptions {
 	/** Namespace of the identifier */
-	namespace: string;
+	namespace?: string;
 
 	/** Block or item identifier */
 	identifier: string;
@@ -16,7 +16,7 @@ export class Identifier implements IdentifierOptions {
 	public readonly identifier: string;
 
 	constructor({ namespace, identifier }: IdentifierOptions) {
-		this.namespace = namespace;
+		this.namespace = namespace ?? "minecraft";
 		this.identifier = identifier;
 	}
 	
@@ -53,6 +53,6 @@ export class Identifier implements IdentifierOptions {
 		if (data.length !== 2) throw new CraftError("Invalid identifier");
 
 		const [ namespace, identifier ] = data;
-		return new Identifier({ namespace, identifier })
+		return new Identifier({ namespace, identifier });
 	}
 }

@@ -39,7 +39,7 @@ export enum ActionType {
 	GetFuelInfo = "fuelinfo",
 
 	/** Keep the connection alive */
-	Ping = "ping",
+	Heartbeat = "heartbeat",
 
 	/** Update the text of a sign */
 	SetSignText = "set_sign_text",
